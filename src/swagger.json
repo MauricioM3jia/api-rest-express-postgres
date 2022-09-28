@@ -1,0 +1,245 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "API REST postgres",
+    "version": "1.0.0"
+  },
+  "servers": [{ "url": "https:localhost:5000" }],
+  "paths": {
+    "/api/singup": {
+      "post": {
+       "summary": "Create a new user",
+        "parameters": [ 
+          {
+            "in": "body",
+            "name":"user",
+            "description": "the user to be created",
+            "schema":{
+               "$ref":"#/components/schemas/SingUp"
+            },"required": true
+          }
+            
+        ],
+        "responses": {
+          "200": {
+            "description": "created please log in",
+              "content": {
+                "aplication/json" :{      
+                }
+              }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/singing": {
+      "post":{
+        "summary": " Sing in path",
+        "parameters": [
+          {
+            "in": "body",
+            "name":"User",
+            "description": "Sing in for an existing user, will return a token",
+            "schema":{
+              "$ref":"#/components/schemas/Singin"
+            },"required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "created please log in",
+              "content": {
+                "aplication/json" :{  
+                  "example":{
+                    "token":"string"
+                  }
+                  
+                }
+              }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/api/dashboard/task":{
+      "get" :{
+        "summary": "Get task",
+        "responses": {
+           "200":{
+            "content": {
+              "application/json" :{
+                  "schema":{
+                      "$ref":"#/components/schemas/task" 
+                  }
+              }
+            
+          } 
+           }
+        }
+      }
+    },
+    "/api/dashboard/update/{id}":{
+      "put":{
+        "security": [
+            {
+              "bearerAuth":[]
+            }
+        ],
+        
+        "parameters": [
+          {
+            "name": "x-access-token",
+            "in": "header",
+            "required": true,
+            "description":"Token will received once user is succesfully logged in"
+          },{
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Id you want to modify must be sumbmitted in the Url path"
+          },
+          {
+            "in": "body",
+            "name":"Task",
+            "description": "Title and desciption for task will be modified",
+            "schema":{
+              "$ref":"#/components/schemas/task" 
+            },"required": true
+          }
+          
+        ],
+        "summary": "to modify a specific task",
+        "responses": {
+          "200" :{
+            "description": "Modified" ,
+            "content": {
+                "aplication/json":{
+                  "schema":{
+                      "$ref" :"#/components/schemas/task" 
+                  } 
+                }
+            }
+          }
+        }
+        
+
+      }
+    },
+    "/api/dashboard/task/{id}":{
+      "delete" :{
+          "security": [
+              {
+                "bearerAuth":[]
+              }
+          ],
+          
+          "parameters": [
+            {
+              "name": "x-access-token",
+              "in": "header",
+              "required": true,
+              "description":"Token will received once user is succesfully logged in"
+            },{
+              "name": "id",
+              "in": "path",
+              "required": true,
+              "description": "Id you want delete"
+            }
+            
+          ],
+          "summary": "to delete a task",
+          "responses": {
+            "200" :{
+              "description": "delete task" ,
+              "content": {
+                  "aplication/json":{
+                    "schema":{
+                        "$ref" :"#/components/schemas/task" 
+                    } 
+                  }
+              }
+            }
+          }
+          
+  
+        
+      }
+    }
+  },
+
+  "components": {
+    "securitySchemes": {
+      "bearerAuth":{
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "SingUp":{
+          "properties": {
+         
+              "name":{
+                "type": "string",
+                "example":"Mauricio"
+              },
+              "lastName":{
+                "type": "string",
+                "example":"Mejia"
+              },
+              "email":{
+                "type": "string",
+                "example":"test123@gmail.com"
+              },
+              "password":{
+                "type": "string",
+                "example":"notsecurepassword"
+              },
+              "confirmPassword":{
+                "type": "string",
+                "example":"notsecurepassword"
+              }
+          }
+      },
+      "Singin": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "test123@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "notsecurepassword"
+          }
+          
+        }
+      },
+      "task":{
+        "properties": {
+          "id":{
+            "type": "integer",
+            "example":1
+        },
+          "Title":{
+            "type": "string",
+            "example" :"Do the dishes"
+          },"Description":{
+            "type": "string",
+              "example":"I have to do the dishes before my moms come back"
+          }
+        }
+
+    }
+  }
+}
+}
